@@ -1,0 +1,101 @@
+<!--
+  Wrapper data component for list entities
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+
+<!--
+`gid-table-samples`
+
+The `gid-table-samples` element is a data component acting as a wrapper  on gid-api used for handling rest calls for list entity component.
+
+<gid-table-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        concept = "100002" application = "100003" database = "100004" schema = "100005" table = "100007"
+        entity="COLUMNS" entities={{entities}}></gid-table-samples>
+        
+If `api-url` is not provided, the component will display sample output for specified entity.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-table-samples">
+    <template>
+        
+        <!-- table samples -->
+        <gid-api auto=false
+                 http-method="GET" api-url={{tableUrl}} response='{{tableResponse}}'
+                 api-timeout={{tableTimeout}} api-params={{tableParams}}></gid-api>
+        <!-- table samples -->
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-table-samples',
+                properties: {
+                    tabledata: {
+                        type: Array,
+                        notify: true
+                    },
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    tableUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    tableTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    tableResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: 'tableResponseChanged'
+                    },
+                    tableParams: {
+                        type: String,
+                        notify: true
+                    },
+                    fetchRows: {
+                        type: Boolean,
+                        notify: true,
+                        observer: 'fetchRowsFunc'
+                    },
+                    table: {
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    }
+                },
+                tableResponseChanged: function (newvalue, oldvalue) {
+                    console.log(newvalue);
+                    this.tabledata = [];
+
+                    if (newvalue != null) {
+                        this.async(function () {
+                            this.tabledata = newvalue.rows;
+                        }, 500);
+                    }
+
+                },
+                fetchRowsFunc: function (newvalue, oldvalue) {
+                	if (this.fetchRows) {
+	                    if (!this.apiUrl) {
+	                        this.tableUrl = this.importPath + 'assets/' + 'tableData.json';
+	                        this.tableTimeout =  this.tableTimeout - 1;
+	                    } else {
+								this.tableUrl = this.apiUrl + "/tables/" + this.table + "/rows";
+	                    		this.tableTimeout =  this.tableTimeout - 1;
+	                    }
+                	}
+                }
+            });
+        })();
+
+
+    </script>
+</dom-module>
