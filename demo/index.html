@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>gid-table-samples</title>
 
-    <link rel="import" href="../gid-table-samples.html">
+    <link rel="import" href="table-samples.html">
     <style>
     	table, th, td {
 	    border: 1px solid grey;
@@ -26,30 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body unresolved>
 <h1>Table Data</h1>
+<table-samples></table-samples>
 
-<div class="horizontal-section-container">
-    <template is="dom-bind" id="app">
-        <gid-table-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-        table = "100007" fetch-rows = true tabledata = {{tabledata}}></gid-table-samples>
-        
-            <div class="horizontal-section">
-                <p></p>
-                <table style="width:50%">
-				  <tr>
-				    <th>Id</th>
-				    <th>User Name</th> 
-				  </tr>
-				  <template is="dom-repeat" items="[[tabledata]]">
-				  <tr>
-				    <td>{{item.id}}</td>
-				    <td>{{item.user_name}}</td> 
-				  </tr>
-				  </template>
-				</table>
-            </div>
-        
-    </template>
-</div>
 
 <script>
     var app = document.querySelector('#app');

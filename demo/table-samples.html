@@ -1,0 +1,78 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../gid-table-samples.html">
+<style>
+  	table, th, td {
+    border: 1px solid grey;
+    border-collapse: collapse;
+	}
+	td {
+	    text-align: center;
+	}
+  </style>
+    
+<dom-module id="table-samples">
+   <div class="horizontal-section-container">
+    <template is="dom-bind" id="app">
+        <gid-table-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        table = "100007" fetch-rows = true tablecolumns = {{tablecolumns}} tabledata = {{tabledata}}></gid-table-samples>
+            <div class="horizontal-section">
+                <p></p>
+                <template is="dom-if" if="[[tablecolumns.length]]">
+	                <table style="width:50%">
+					  <tr>
+					    <th>{{col1}}</th> 
+					    <th>{{col2}}</th>
+					  </tr>
+					  <template is="dom-repeat" items="[[tabledata]]">
+					  <tr>
+					    <td>{{item.id}}</td>
+					    <td>{{item.shipstate}}</td> 
+					  </tr>
+					  </template>
+					</table>
+				</template>
+            </div>
+        
+    </template>
+</div>
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'table-samples',
+                properties: {
+                    tabledata: {
+                    	type: Array,
+                    	notify: true    
+                   },
+                   tablecolumns: {
+                   	type: Array,
+                   	notify: true,
+                   	observer: 'tablecolumnsArrChanged'
+                  },
+                  col1: {
+                	  type: String,
+                      notify: true,
+                      value: ""
+                  },
+                  col2: {
+                	  type: String,
+                      notify: true,
+                      value: ""
+                  }
+                },
+                tablecolumnsArrChanged: function(event){
+                	if(this.tablecolumns.length){
+                		this.col1 =  this.tablecolumns[1]["label"];
+                		this.col2 =  this.tablecolumns[0]["label"];
+                	}
+                }
+
+            });
+        })();
+
+
+    </script>
+</dom-module>
