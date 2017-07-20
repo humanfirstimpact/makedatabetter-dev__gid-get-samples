@@ -63,10 +63,10 @@ If `api-url` is not provided, the component will display sample output for speci
                         type: String,
                         notify: true
                     },
-                    fetchRows: {
+                    fetchTableData: {
                         type: Boolean,
                         notify: true,
-                        observer: 'fetchRowsFunc'
+                        observer: 'fetchTableDataFunc'
                     },
                     table: {
                     	type: String,
@@ -85,8 +85,8 @@ If `api-url` is not provided, the component will display sample output for speci
                     }
 
                 },
-                fetchRowsFunc: function (newvalue, oldvalue) {
-                	if (this.fetchRows) {
+                fetchTableDataFunc: function (newvalue, oldvalue) {
+                	if (this.fetchTableData) {
 	                    if (!this.apiUrl) {
 	                        this.tableUrl = this.importPath + 'assets/' + 'tableData.json';
 	                        this.tableTimeout =  this.tableTimeout - 1;
