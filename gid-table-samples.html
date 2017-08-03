@@ -7,10 +7,13 @@
 <!--
 `gid-table-samples`
 
-The `gid-table-samples` element is a data component acting as a wrapper  on gid-api used for handling rest calls for table samples.
+The `gid-table-samples` element is a data component acting as a wrapper  on gid-api used for handling rest calls for fetching rows and columns of
+the specified table.
 
 <gid-table-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-        table = "100007" fetch-rows = true tabledata = {{tabledata}}></gid-table-samples>
+        table = "100007" tabledata = {{tabledata}}></gid-table-samples>
+        
+The property 'table' is mandatory
         
 If `api-url` is not provided, the component will display sample output for specified entity.
 
@@ -18,6 +21,10 @@ If `api-url` is not provided, the component will display sample output for speci
 -->
 <dom-module id="gid-table-samples">
     <template>
+        
+        <!-- fetch entity path  -->
+        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        <!--  fetch entity path -->
         
         <!-- table samples -->
         <gid-api auto=false
@@ -71,31 +78,56 @@ If `api-url` is not provided, the component will display sample output for speci
                     table: {
                     	type: String,
                     	notify: true,
-                    	value: ''
+                    	value: '',
+                    	observer: 'tableModified'
+                    },
+                    path: {
+                    	type: String,
+                        notify: true,
+                        value: '',
+                        observer: 'pathReceived'
+                    },
+                    apiEntity: {
+                    	 type: String,
+                    	 notify: true,
+                    	 value: ''
                     }
                 },
-                tableResponseChanged: function (newvalue, oldvalue) {
-                    this.tablecolumns = [];
-                    this.tabledata = [];
-                    if (newvalue != null) {
-                        this.async(function () {
-                        	this.tablecolumns =  newvalue.columns;
-                            this.tabledata = newvalue.rows;
-                        }, 500);
-                    }
-
-                },
-                fetchTableDataFunc: function (newvalue, oldvalue) {
-                	if (this.fetchTableData) {
+                tableModified: function (newvalue, oldvalue) {
+                	if (this.table) {
 	                    if (!this.apiUrl) {
-	                        this.tableUrl = this.importPath + 'assets/' + 'tableData.json';
+	                        this.tableUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
 	                        this.tableTimeout =  this.tableTimeout - 1;
 	                    } else {
-								this.tableUrl = this.apiUrl + "/tables/" + this.table + "/rows";
-	                    		this.tableTimeout =  this.tableTimeout - 1;
+	                    	this.apiEntity = 'TABLE-DATA';
 	                    }
                 	}
-                }
+                },
+                pathReceived: function(){
+                 	 if(this.path){
+                 		var res = this.path.split(/{([^}]+)}/);
+                 		for (var i in res) {
+                 			if(!res[i].startsWith("/")){
+                 					if(this[res[i]]){
+                 						res[i] = this[res[i]];
+                 					}
+                 			}
+                 		}
+               			this.tableUrl = this.apiUrl + res.join("");
+               			this.tableTimeout =  this.tableTimeout - 1;
+                   }
+              },
+              tableResponseChanged: function (newvalue, oldvalue) {
+                  this.tablecolumns = [];
+                  this.tabledata = [];
+                  if (newvalue != null) {
+                      this.async(function () {
+                      	this.tablecolumns =  newvalue.columns;
+                          this.tabledata = newvalue.rows;
+                      }, 500);
+                  }
+
+              }
             });
         })();
 
