@@ -2,7 +2,7 @@
 
 A data component for fetching rows and columns of the specified table.
 
-    <gid-get-samples columns="col-id1,col-id2.." tabledata = {{tabledata}}></gid-get-samples>
+    <gid-get-samples columns="[col-id1,col-id2..]" tabledata = {{tabledata}}></gid-get-samples>
     
 The property 'user' is mandatory.
 

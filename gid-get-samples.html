@@ -1,0 +1,168 @@
+<!--
+  Wrapper data component for samples
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+
+<!--
+`gid-get-samples`
+
+The `gid-get-samples` element is a data component acting as a wrapper  on gid-api used for handling rest calls for fetching the data
+against specified columns
+
+<gid-get-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+limit = '50' columns = '["200010","200001"]' 
+samplecolumns = {{samplecolumns}} samplerows = {{samplerows}}>
+</gid-get-samples>
+        
+The property 'columns' is mandatory
+        
+If `api-url` is not provided, the component will display sample output for specified entity.
+
+@demo demo/index.html
+-->
+<dom-module id="gid-get-samples">
+    <template>
+        
+        <!-- fetch entity path  -->
+        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        <!--  fetch entity path -->
+        
+        <!-- table samples -->
+        <gid-api auto=false
+                 method="GET" api-url={{sampleUrl}} response='{{sampleResponse}}'
+                 api-timeout={{sampleTimeout}} api-params={{sampleParams}}></gid-api>
+        <!-- table samples -->
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-get-samples',
+                properties: {
+                	paramsArr: {
+      	           	   type: Array,
+      	           	   notify: true,
+      	           	   value: ["columns", "limit"]
+                     },
+                	samplerows: {
+                        type: Array,
+                        notify: true
+                    },
+                    samplecolumns: {
+                        type: Array,
+                        notify: true
+                    },
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    sampleUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    sampleTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    sampleResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: 'sampleResponseChanged'
+                    },
+                    sampleParams: {
+                        type: String,
+                        notify: true
+                    },
+                    limit:{
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    },
+                    columns: {
+                    	type: Array,
+                    	notify: true,
+                    	value: '',
+                    	observer: 'columnsModified'
+                    },
+                    user: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    path: {
+                    	type: String,
+                        notify: true,
+                        value: '',
+                        observer: 'pathReceived'
+                    },
+                    apiEntity: {
+                    	 type: String,
+                    	 notify: true,
+                    	 value: ''
+                    }
+                },
+                columnsModified: function (newvalue, oldvalue) {
+                	if (this.columns) {
+	                    if (!this.apiUrl) {
+	                        this.sampleUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+	                        this.sampleTimeout =  this.sampleTimeout - 1;
+	                    } else {
+	                    	this.apiEntity = 'TABLE-SAMPLES';
+	                    }
+                	}
+                },
+                pathReceived: function(){
+                 	 if(this.path){
+                 		var res = this.path.split(/{([^}]+)}/);
+                 		for (var i in res) {
+                 			if(!res[i].startsWith("/")){
+                 					if(this[res[i]]){
+                 						res[i] = this[res[i]];
+                 					}
+                 			}
+                 		}
+               			this.sampleUrl = this.apiUrl + res.join("");
+               			var paramVal = '';
+               			var paramsObj = {};
+               			for (var i in this.paramsArr){
+                        	paramVal = '';
+                        	if(typeof(this[this.paramsArr[i]]) === "string"){
+                        		paramVal = this[this.paramsArr[i]];
+                        	}
+                        	else{
+                        		if(this[this.paramsArr[i]].length){
+                            		for (var j in this[this.paramsArr[i]]) {
+                    		    		paramVal = paramVal + this[this.paramsArr[i]][j];
+                    		    		if(j != (this[this.paramsArr[i]].length - 1)){
+                    		    			paramVal = paramVal + ',';
+                    		    		}
+                             		}
+                            	}
+                        	}
+                        	paramsObj[this.paramsArr[i]]= paramVal;
+                        }
+               			this.sampleParams = JSON.stringify(paramsObj);
+               			this.sampleTimeout =  this.sampleTimeout - 1;
+                   }
+              },
+              sampleResponseChanged: function (newvalue, oldvalue) {
+                  this.samplecolumns = [];
+                  this.samplerows = [];
+                  if (newvalue != null) {
+                      this.async(function () {
+                      	  this.samplecolumns =  newvalue.columns;
+                          this.samplerows = newvalue.rows;
+                      }, 500);
+                  }
+
+              }
+            });
+        })();
+
+
+    </script>
+</dom-module>

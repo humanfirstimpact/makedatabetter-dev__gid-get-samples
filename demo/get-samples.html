@@ -1,5 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../gid-table-samples.html">
+<link rel="import" href="../gid-get-samples.html">
 <style>
   	table, th, td {
     border: 1px solid grey;
@@ -10,20 +10,20 @@
 	}
   </style>
     
-<dom-module id="table-samples">
+<dom-module id="get-samples">
    <div class="horizontal-section-container">
-    <template is="dom-bind" id="app">
-        <gid-table-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-        table = "100007"  tablecolumns = {{tablecolumns}} tabledata = {{tabledata}}></gid-table-samples>
+    <template>
+        <gid-get-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        limit = '50' columns = '["200010","200001"]' samplecolumns = {{samplecolumns}} samplerows = {{samplerows}}></gid-get-samples>
             <div class="horizontal-section">
                 <p></p>
-                <template is="dom-if" if="[[tablecolumns.length]]">
+                <template is="dom-if" if="[[samplecolumns.length]]">
 	                <table style="width:50%">
 					  <tr>
 					    <th>{{col1}}</th> 
 					    <th>{{col2}}</th>
 					  </tr>
-					  <template is="dom-repeat" items="[[tabledata]]">
+					  <template is="dom-repeat" items="[[samplerows]]">
 					  <tr>
 					    <td>{{item.id}}</td>
 					    <td>{{item.shipstate}}</td> 
@@ -41,16 +41,16 @@
         (function () {
             'use strict';
             Polymer({
-                is: 'table-samples',
+                is: 'get-samples',
                 properties: {
-                    tabledata: {
+                    samplerows: {
                     	type: Array,
                     	notify: true    
                    },
-                   tablecolumns: {
+                   samplecolumns: {
                    	type: Array,
                    	notify: true,
-                   	observer: 'tablecolumnsArrChanged'
+                   	observer: 'samplecolumnsArrChanged'
                   },
                   col1: {
                 	  type: String,
@@ -63,10 +63,10 @@
                       value: ""
                   }
                 },
-                tablecolumnsArrChanged: function(event){
-                	if(this.tablecolumns.length){
-                		this.col1 =  this.tablecolumns[1]["label"];
-                		this.col2 =  this.tablecolumns[0]["label"];
+                samplecolumnsArrChanged: function(event){
+                	if(this.samplecolumns.length){
+                		this.col1 =  this.samplecolumns[1]["label"];
+                		this.col2 =  this.samplecolumns[0]["label"];
                 	}
                 }
 
