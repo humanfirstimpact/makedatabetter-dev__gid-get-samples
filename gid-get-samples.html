@@ -7,17 +7,90 @@
 <!--
 `gid-get-samples`
 
-The `gid-get-samples` element is a data component acting as a wrapper  on gid-api used for handling rest calls for fetching the data
-against specified columns
 
-<gid-get-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-limit = '50' columns = '["200010","200001"]' 
-samplecolumns = {{samplecolumns}} samplerows = {{samplerows}}>
-</gid-get-samples>
-        
-The property 'columns' is mandatory
-        
+A data component for fetching rows and columns of the specified table.
+
+    <gid-get-samples columns="[col-id1,col-id2..]" tabledata = {{tabledata}}></gid-get-samples>
+    
+The property 'user' is mandatory.
+
 If `api-url` is not provided, the component will display sample output for specified entity.
+
+API endpoint:
+
+    GET /samples?columns=id1,id2,id3&limit=50
+
+Input:
+
+- columns : List of Column Ids (mandatory query param)
+- limit : limit by row (optional query Param)
+
+
+
+Output:
+
+- Samples for provided Column IDs
+
+The output of this components will be as follows:
+
+	   {
+		"columns": [{
+			"id": "200010",
+			"label": "shipstate"
+		}, {
+			"id": "200001",
+			"label": "id"
+		}, {
+			"id": "200007",
+			"label": "ship-date"
+		}, {
+			"id": "200006",
+			"label": "amount"
+		}, {
+			"id": "200009",
+			"label": "ship-city"
+		}, {
+			"id": "200008",
+			"label": "ship-address"
+		}, {
+			"id": "200003",
+			"label": "product_code"
+		}, {
+			"id": "200002",
+			"label": "user_name"
+		}, {
+			"id": "200005",
+			"label": "order_date"
+		}, {
+			"id": "200004",
+			"label": "quantity"
+		}],
+		"rows": [
+		[
+			 "Florida",
+			 "83",
+			 "7/3/2016",
+			 "$7.94",
+			"Kansas City",
+			 "10790 Wayridge Park",
+			 "YI-722",
+			"ccostin11",
+			 "4/17/2017",
+			"17"
+		], [
+			 "Texas",
+			"70",
+			 "1/18/2017",
+			 "$35.29",
+			"Washington",
+			"6723 Duke Circle",
+			 "UR-391",
+			"jburgen27",
+			 "5/18/2016",
+			"41"
+		]]
+	}
+
 
 @demo demo/index.html
 -->
@@ -108,7 +181,7 @@ If `api-url` is not provided, the component will display sample output for speci
                 columnsModified: function (newvalue, oldvalue) {
                 	if (this.columns) {
 	                    if (!this.apiUrl) {
-	                        this.sampleUrl = this.importPath + 'assets/json/' + this.entity.toLowerCase() + '.json';
+	                        this.sampleUrl = this.importPath + 'assets/json/table-samples.json';
 	                        this.sampleTimeout =  this.sampleTimeout - 1;
 	                    } else {
 	                    	this.apiEntity = 'TABLE-SAMPLES';
