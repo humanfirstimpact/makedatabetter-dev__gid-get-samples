@@ -2,43 +2,43 @@
 "columns": [
 {
 "id": "200010",
-"label": "shipstate"
+"label": "SAMPLE shipstate"
 },
 {
 "id": "200001",
-"label": "id"
+"label": "SAMPLE id"
 },
 {
 "id": "200007",
-"label": "ship-date"
+"label": "SAMPLE ship-date"
 },
 {
 "id": "200006",
-"label": "amount"
+"label": "SAMPLE amount"
 },
 {
 "id": "200009",
-"label": "ship-city"
+"label": "SAMPLE ship-city"
 },
 {
 "id": "200008",
-"label": "ship-address"
+"label": "SAMPLE ship-address"
 },
 {
 "id": "200003",
-"label": "product_code"
+"label": "SAMPLE product_code"
 },
 {
 "id": "200002",
-"label": "user_name"
+"label": "SAMPLE user_name"
 },
 {
 "id": "200005",
-"label": "order_date"
+"label": "SAMPLE order_date"
 },
 {
 "id": "200004",
-"label": "quantity"
+"label": "SAMPLE quantity"
 }
 ],
 "rows": [

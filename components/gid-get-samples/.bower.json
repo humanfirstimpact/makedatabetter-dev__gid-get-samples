@@ -1,6 +1,6 @@
 {
-  "name": "gid-table-samples",
-  "main": "gid-table-samples.html",
+  "name": "gid-get-samples",
+  "main": "gid-get-samples.html",
   "authors": [
     "Shreya Bharadwaj"
   ],
@@ -16,14 +16,14 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
     "gid-api": "makedatabetter-dev/gid-api"
   },
-  "homepage": "https://github.com/makedatabetter-dev/gid-table-samples",
-  "_release": "3e12b94151",
+  "homepage": "https://github.com/makedatabetter-dev/gid-get-samples",
+  "_release": "39c36e1fd7",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "3e12b94151a33b339919fda445fda6ea78d092e9"
+    "commit": "39c36e1fd789805590ca742661222c0ae4a4c43d"
   },
-  "_source": "https://github.com/makedatabetter-dev/gid-table-samples.git",
+  "_source": "https://github.com/makedatabetter-dev/gid-get-samples.git",
   "_target": "*",
-  "_originalSource": "makedatabetter-dev/gid-table-samples"
+  "_originalSource": "makedatabetter-dev/gid-get-samples"
 }

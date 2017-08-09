@@ -1,5 +1,4 @@
-# \<gid-table-samples\>
-
+## gid-table-samples
 
 ## Install the Polymer-CLI
 

@@ -1,0 +1,241 @@
+<!--
+  Wrapper data component for samples
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../gid-api/gid-api.html">
+
+<!--
+`gid-get-samples`
+
+
+A data component for fetching rows and columns of the specified table.
+
+    <gid-get-samples columns="[col-id1,col-id2..]" tabledata = {{tabledata}}></gid-get-samples>
+    
+The property 'user' is mandatory.
+
+If `api-url` is not provided, the component will display sample output for specified entity.
+
+API endpoint:
+
+    GET /samples?columns=id1,id2,id3&limit=50
+
+Input:
+
+- columns : List of Column Ids (mandatory query param)
+- limit : limit by row (optional query Param)
+
+
+
+Output:
+
+- Samples for provided Column IDs
+
+The output of this components will be as follows:
+
+	   {
+		"columns": [{
+			"id": "200010",
+			"label": "shipstate"
+		}, {
+			"id": "200001",
+			"label": "id"
+		}, {
+			"id": "200007",
+			"label": "ship-date"
+		}, {
+			"id": "200006",
+			"label": "amount"
+		}, {
+			"id": "200009",
+			"label": "ship-city"
+		}, {
+			"id": "200008",
+			"label": "ship-address"
+		}, {
+			"id": "200003",
+			"label": "product_code"
+		}, {
+			"id": "200002",
+			"label": "user_name"
+		}, {
+			"id": "200005",
+			"label": "order_date"
+		}, {
+			"id": "200004",
+			"label": "quantity"
+		}],
+		"rows": [
+		[
+			 "Florida",
+			 "83",
+			 "7/3/2016",
+			 "$7.94",
+			"Kansas City",
+			 "10790 Wayridge Park",
+			 "YI-722",
+			"ccostin11",
+			 "4/17/2017",
+			"17"
+		], [
+			 "Texas",
+			"70",
+			 "1/18/2017",
+			 "$35.29",
+			"Washington",
+			"6723 Duke Circle",
+			 "UR-391",
+			"jburgen27",
+			 "5/18/2016",
+			"41"
+		]]
+	}
+
+
+@demo demo/index.html
+-->
+<dom-module id="gid-get-samples">
+    <template>
+        
+        <!-- fetch entity path  -->
+        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        <!--  fetch entity path -->
+        
+        <!-- table samples -->
+        <gid-api auto=false
+                 method="GET" api-url={{sampleUrl}} response='{{sampleResponse}}'
+                 api-timeout={{sampleTimeout}} api-params={{sampleParams}}></gid-api>
+        <!-- table samples -->
+
+    </template>
+    <script>
+        (function () {
+            'use strict';
+            Polymer({
+                is: 'gid-get-samples',
+                properties: {
+                	paramsArr: {
+      	           	   type: Array,
+      	           	   notify: true,
+      	           	   value: ["columns", "limit"]
+                     },
+                	samplerows: {
+                        type: Array,
+                        notify: true
+                    },
+                    samplecolumns: {
+                        type: Array,
+                        notify: true
+                    },
+                    apiUrl: {
+                        type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    sampleUrl: {
+                        type: String,
+                        notify: true
+                    },
+                    sampleTimeout: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    sampleResponse: {
+                        type: Object,
+                        notify: true,
+                        observer: 'sampleResponseChanged'
+                    },
+                    sampleParams: {
+                        type: String,
+                        notify: true
+                    },
+                    limit:{
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    },
+                    columns: {
+                    	type: Array,
+                    	notify: true,
+                    	value: '',
+                    	observer: 'columnsModified'
+                    },
+                    user: {
+                    	type: String,
+                        notify: true,
+                        value: ''
+                    },
+                    path: {
+                    	type: String,
+                        notify: true,
+                        value: '',
+                        observer: 'pathReceived'
+                    },
+                    apiEntity: {
+                    	 type: String,
+                    	 notify: true,
+                    	 value: ''
+                    }
+                },
+                columnsModified: function (newvalue, oldvalue) {
+                	if (this.columns) {
+	                    if (!this.apiUrl) {
+	                        this.sampleUrl = this.importPath + 'assets/json/table-samples.json';
+	                        this.sampleTimeout =  this.sampleTimeout - 1;
+	                    } else {
+	                    	this.apiEntity = 'TABLE-SAMPLES';
+	                    }
+                	}
+                },
+                pathReceived: function(){
+                 	 if(this.path){
+                 		var res = this.path.split(/{([^}]+)}/);
+                 		for (var i in res) {
+                 			if(!res[i].startsWith("/")){
+                 					if(this[res[i]]){
+                 						res[i] = this[res[i]];
+                 					}
+                 			}
+                 		}
+               			this.sampleUrl = this.apiUrl + res.join("");
+               			var paramVal = '';
+               			var paramsObj = {};
+               			for (var i in this.paramsArr){
+                        	paramVal = '';
+                        	if(typeof(this[this.paramsArr[i]]) === "string"){
+                        		paramVal = this[this.paramsArr[i]];
+                        	}
+                        	else{
+                        		if(this[this.paramsArr[i]].length){
+                            		for (var j in this[this.paramsArr[i]]) {
+                    		    		paramVal = paramVal + this[this.paramsArr[i]][j];
+                    		    		if(j != (this[this.paramsArr[i]].length - 1)){
+                    		    			paramVal = paramVal + ',';
+                    		    		}
+                             		}
+                            	}
+                        	}
+                        	paramsObj[this.paramsArr[i]]= paramVal;
+                        }
+               			this.sampleParams = JSON.stringify(paramsObj);
+               			this.sampleTimeout =  this.sampleTimeout - 1;
+                   }
+              },
+              sampleResponseChanged: function (newvalue, oldvalue) {
+                  this.samplecolumns = [];
+                  this.samplerows = [];
+                  if (newvalue != null) {
+                      this.async(function () {
+                      	  this.samplecolumns =  newvalue.columns;
+                          this.samplerows = newvalue.rows;
+                      }, 500);
+                  }
+
+              }
+            });
+        })();
+
+
+    </script>
+</dom-module>

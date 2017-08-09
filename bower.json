@@ -1,6 +1,6 @@
 {
-  "name": "gid-table-samples",
-  "main": "gid-table-samples.html",
+  "name": "gid-get-samples",
+  "main": "gid-get-samples.html",
   "authors": [
     "Shreya Bharadwaj"
   ],
@@ -15,6 +15,6 @@
     "web-component-tester": "^4.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
     "gid-api": "makedatabetter-dev/gid-api",
-    "gid-table-samples": "makedatabetter-dev/gid-table-samples"
+    "gid-get-samples": "makedatabetter-dev/gid-get-samples"
   }
 }
