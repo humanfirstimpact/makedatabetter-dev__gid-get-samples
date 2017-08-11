@@ -225,6 +225,8 @@ The output of this components will be as follows:
               sampleResponseChanged: function (newvalue, oldvalue) {
                   this.samplecolumns = [];
                   this.samplerows = [];
+				  this.apiEntity = '';
+				  this.path = '';
                   if (newvalue != null) {
                       this.async(function () {
                       	  this.samplecolumns =  newvalue.columns;
