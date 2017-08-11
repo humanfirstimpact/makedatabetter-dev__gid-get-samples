@@ -181,10 +181,10 @@ The output of this components will be as follows:
                 columnsModified: function (newvalue, oldvalue) {
                 	if (this.columns) {
 	                    if (!this.apiUrl) {
-	                        this.sampleUrl = this.importPath + 'assets/json/table-samples.json';
+	                        this.sampleUrl = this.importPath + 'assets/json/get-samples.json';
 	                        this.sampleTimeout =  this.sampleTimeout - 1;
 	                    } else {
-	                    	this.apiEntity = 'TABLE-SAMPLES';
+	                    	this.apiEntity = 'GET-SAMPLES';
 	                    }
                 	}
                 },
