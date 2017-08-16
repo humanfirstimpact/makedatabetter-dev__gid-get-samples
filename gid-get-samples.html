@@ -104,7 +104,7 @@ The output of this components will be as follows:
         <!-- table samples -->
         <gid-api auto=false
                  method="GET" api-url={{sampleUrl}} response='{{sampleResponse}}'
-                 api-timeout={{sampleTimeout}} api-params={{sampleParams}}></gid-api>
+                 api-params={{sampleParams}} api-token = {{sampleToken}} api-timeout={{sampleTimeout}}></gid-api>
         <!-- table samples -->
 
     </template>
@@ -114,6 +114,11 @@ The output of this components will be as follows:
             Polymer({
                 is: 'gid-get-samples',
                 properties: {
+                	apiToken: {
+                    	type: String,
+                        notify: true,
+                        value : ''
+                    },
                 	paramsArr: {
       	           	   type: Array,
       	           	   notify: true,
@@ -148,6 +153,10 @@ The output of this components will be as follows:
                     },
                     sampleParams: {
                         type: String,
+                        notify: true
+                    },
+                    sampleToken: {
+                    	type: String,
                         notify: true
                     },
                     limit:{
@@ -219,6 +228,9 @@ The output of this components will be as follows:
                         	paramsObj[this.paramsArr[i]]= paramVal;
                         }
                			this.sampleParams = JSON.stringify(paramsObj);
+               			if(this.apiToken){
+               				this.sampleToken =  this.apiToken;
+               			}
                			this.sampleTimeout =  this.sampleTimeout - 1;
                    }
               },
