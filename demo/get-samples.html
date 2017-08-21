@@ -13,9 +13,10 @@
 <dom-module id="get-samples">
    <div class="horizontal-section-container">
     <template>
-        <gid-get-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
+        <gid-get-samples
         limit = '50' columns = '["200011","200051"]' api-token = 'VVNfMjItMzg0MjY1N18xMTA1MTY0MzI5NzY0MTUwMjQ1MTUxMTQ1MzI3MDFY'
-        samplecolumns = {{samplecolumns}} samplerows = {{samplerows}}></gid-get-samples>
+        get-samples = true
+        samplecolumns = {{samplecolumns}} samplerows = {{samplerows}} ></gid-get-samples>
             <div class="horizontal-section">
                 <p></p>
                 <template is="dom-if" if="[[samplecolumns.length]]">

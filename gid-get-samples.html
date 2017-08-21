@@ -167,8 +167,7 @@ The output of this components will be as follows:
                     columns: {
                     	type: Array,
                     	notify: true,
-                    	value: '',
-                    	observer: 'columnsModified'
+                    	value: ''
                     },
                     user: {
                     	type: String,
@@ -185,10 +184,16 @@ The output of this components will be as follows:
                     	 type: String,
                     	 notify: true,
                     	 value: ''
+                    },
+                    getSamples: {
+                    	type: Boolean,
+                    	notify: true,
+                    	value: false,
+                    	observer: 'fetchSamples'
                     }
                 },
-                columnsModified: function (newvalue, oldvalue) {
-                	if (this.columns) {
+                fetchSamples: function (newvalue, oldvalue) {
+                	if (this.getSamples) {
 	                    if (!this.apiUrl) {
 	                        this.sampleUrl = this.importPath + 'assets/json/get-samples.json';
 	                        this.sampleTimeout =  this.sampleTimeout - 1;
