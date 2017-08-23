@@ -122,7 +122,7 @@ The output of this components will be as follows:
                 	paramsArr: {
       	           	   type: Array,
       	           	   notify: true,
-      	           	   value: ["columns", "limit"]
+      	           	   value: ["columns", "limit", "offset"]
                      },
                 	samplerows: {
                         type: Array,
@@ -164,10 +164,15 @@ The output of this components will be as follows:
                     	notify: true,
                     	value: ''
                     },
+                    offset:{
+                    	type: String,
+                    	notify: true,
+                    	value: ''
+                    },
                     columns: {
                     	type: Array,
                     	notify: true,
-                    	value: ''
+                    	value: []
                     },
                     user: {
                     	type: String,
@@ -217,20 +222,22 @@ The output of this components will be as follows:
                			var paramsObj = {};
                			for (var i in this.paramsArr){
                         	paramVal = '';
-                        	if(typeof(this[this.paramsArr[i]]) === "string"){
-                        		paramVal = this[this.paramsArr[i]];
-                        	}
-                        	else{
-                        		if(this[this.paramsArr[i]].length){
-                            		for (var j in this[this.paramsArr[i]]) {
-                    		    		paramVal = paramVal + this[this.paramsArr[i]][j];
-                    		    		if(j != (this[this.paramsArr[i]].length - 1)){
-                    		    			paramVal = paramVal + ',';
-                    		    		}
-                             		}
-                            	}
-                        	}
-                        	paramsObj[this.paramsArr[i]]= paramVal;
+	                        	if(typeof(this[this.paramsArr[i]]) === "string"){
+	                        		paramVal = this[this.paramsArr[i]];
+	                        	}
+	                        	else{
+	                        		if(this[this.paramsArr[i]].length){
+	                            		for (var j in this[this.paramsArr[i]]) {
+	                    		    		paramVal = paramVal + this[this.paramsArr[i]][j];
+	                    		    		if(j != (this[this.paramsArr[i]].length - 1)){
+	                    		    			paramVal = paramVal + ',';
+	                    		    		}
+	                             		}
+	                            	}
+	                        	}
+	                        	if(this[this.paramsArr[i]]){
+	                        		paramsObj[this.paramsArr[i]]= paramVal;
+	                        	}
                         }
                			this.sampleParams = JSON.stringify(paramsObj);
                			if(this.apiToken){
