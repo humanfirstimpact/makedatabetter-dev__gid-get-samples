@@ -197,7 +197,7 @@ The output of this components will be as follows:
                     	observer: 'fetchSamples'
                     }
                 },
-                fetchSamples: function (newvalue, oldvalue) {
+                fetchSamples: function () {
                 	if (this.getSamples) {
 	                    if (!this.apiUrl) {
 	                        this.sampleUrl = this.importPath + 'assets/json/get-samples.json';
@@ -251,6 +251,7 @@ The output of this components will be as follows:
                   this.samplerows = [];
 				  this.apiEntity = '';
 				  this.path = '';
+				  this.getSamples = false;
                   if (newvalue != null) {
                       this.async(function () {
                       	  this.samplecolumns =  newvalue.columns;
