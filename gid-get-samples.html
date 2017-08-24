@@ -98,12 +98,12 @@ The output of this components will be as follows:
     <template>
         
         <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path='{{path}}'></gid-api>
+        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
         <!--  fetch entity path -->
         
         <!-- table samples -->
         <gid-api auto=false
-                 method="GET" api-url={{sampleUrl}} response='{{sampleResponse}}'
+                 method="GET" api-url={{sampleUrl}} response='{{sampleResponse}}' error = '{{sampleError}}'
                  api-params={{sampleParams}} api-token = {{sampleToken}} api-timeout={{sampleTimeout}}></gid-api>
         <!-- table samples -->
 
@@ -149,8 +149,13 @@ The output of this components will be as follows:
                     sampleResponse: {
                         type: Object,
                         notify: true,
-                        observer: 'sampleResponseChanged'
+                        observer: 'sampleResponseReceived'
                     },
+                    sampleError : {
+    	     	  		type : Object,
+    	     	  		notify : true,
+    	     	  		observer : 'sampleErrorReceived'
+            	  	},
                     sampleParams: {
                         type: String,
                         notify: true
@@ -179,6 +184,11 @@ The output of this components will be as follows:
                         notify: true,
                         value: ''
                     },
+                    pathKey: {
+    	            	type: String,
+    	                notify: true,
+    	                value: ''
+    	            },
                     path: {
                     	type: String,
                         notify: true,
@@ -203,6 +213,7 @@ The output of this components will be as follows:
 	                        this.sampleUrl = this.importPath + 'assets/json/get-samples.json';
 	                        this.sampleTimeout =  this.sampleTimeout - 1;
 	                    } else {
+	                    	this.pathKey =  'default';
 	                    	this.apiEntity = 'GET-SAMPLES';
 	                    }
                 	}
@@ -246,12 +257,8 @@ The output of this components will be as follows:
                			this.sampleTimeout =  this.sampleTimeout - 1;
                    }
               },
-              sampleResponseChanged: function (newvalue, oldvalue) {
-                  this.samplecolumns = [];
-                  this.samplerows = [];
-				  this.apiEntity = '';
-				  this.path = '';
-				  this.getSamples = false;
+              sampleResponseReceived: function (newvalue, oldvalue) {
+            	  this.reset();
                   if (newvalue != null) {
                       this.async(function () {
                       	  this.samplecolumns =  newvalue.columns;
@@ -259,6 +266,22 @@ The output of this components will be as follows:
                       }, 500);
                   }
 
+              },
+              conceptDetailsErrorReceived : function(newvalue, oldvalue){
+              	 this.reset();
+        	          if(newvalue != null){
+        		             this.async(function() {
+        		         		this.conceptdetails =  this.conceptdetails.concat(newvalue);
+        		   		 	          }, 500);
+        	          }
+                 	
+              },
+              reset: function(){
+            	  this.samplecolumns = [];
+                  this.samplerows = [];
+				  this.apiEntity = '';
+				  this.path = '';
+				  this.getSamples = false;
               }
             });
         })();
