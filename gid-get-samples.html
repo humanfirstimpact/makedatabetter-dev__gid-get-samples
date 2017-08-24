@@ -267,11 +267,12 @@ The output of this components will be as follows:
                   }
 
               },
-              conceptDetailsErrorReceived : function(newvalue, oldvalue){
+              sampleErrorReceived : function(newvalue, oldvalue){
               	 this.reset();
         	          if(newvalue != null){
         		             this.async(function() {
-        		         		this.conceptdetails =  this.conceptdetails.concat(newvalue);
+        		         		this.samplecolumns =  newvalue.response;
+							    this.samplerows = newvalue.response;
         		   		 	          }, 500);
         	          }
                  	
