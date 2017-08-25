@@ -10,9 +10,13 @@
 
 A data component for fetching rows and columns of the specified table.
 
-    <gid-get-samples columns="[col-id1,col-id2..]" tabledata = {{tabledata}}></gid-get-samples>
+    <gid-get-samples columns="[col-id1,col-id2..]" get-samples = true sampledata = {{sampledata}}></gid-get-samples>
     
-The property 'user' is mandatory.
+The property 'user' , 'columns' and 'get-samples' are  mandatory.
+
+The field 'get-samples' needs to set to true in order to fetch samples.
+
+The 'sampledata' returns the response of the rest call.
 
 If `api-url` is not provided, the component will display sample output for specified entity.
 
@@ -124,11 +128,7 @@ The output of this components will be as follows:
       	           	   notify: true,
       	           	   value: ["columns", "limit", "offset"]
                      },
-                	samplerows: {
-                        type: Array,
-                        notify: true
-                    },
-                    samplecolumns: {
+                	sampledata: {
                         type: Array,
                         notify: true
                     },
@@ -261,8 +261,7 @@ The output of this components will be as follows:
             	  this.reset();
                   if (newvalue != null) {
                       this.async(function () {
-                      	  this.samplecolumns =  newvalue.columns;
-                          this.samplerows = newvalue.rows;
+                      	  this.sampledata =  newvalue;
                       }, 500);
                   }
 
@@ -271,15 +270,13 @@ The output of this components will be as follows:
               	 this.reset();
         	          if(newvalue != null){
         		             this.async(function() {
-        		         		this.samplecolumns =  newvalue.response;
-							    this.samplerows = newvalue.response;
+        		         		this.sampledata =  newvalue;
         		   		 	          }, 500);
         	          }
                  	
               },
               reset: function(){
-            	  this.samplecolumns = [];
-                  this.samplerows = [];
+            	  this.sampledata = [];
 				  this.apiEntity = '';
 				  this.path = '';
 				  this.getSamples = false;
