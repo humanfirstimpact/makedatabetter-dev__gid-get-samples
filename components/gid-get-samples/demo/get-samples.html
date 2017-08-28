@@ -11,31 +11,31 @@
   </style>
     
 <dom-module id="get-samples">
-   <div class="horizontal-section-container">
     <template>
-        <gid-get-samples api-url='https://ql50yzu0fj.execute-api.us-east-1.amazonaws.com/dev'
-        limit = '50' columns = '["200010","200001"]' samplecolumns = {{samplecolumns}} samplerows = {{samplerows}}></gid-get-samples>
-            <div class="horizontal-section">
-                <p></p>
-                <template is="dom-if" if="[[samplecolumns.length]]">
-	                <table style="width:50%">
-					  <tr>
-					    <th>{{col1}}</th> 
-					    <th>{{col2}}</th>
-					  </tr>
-					  <template is="dom-repeat" items="[[samplerows]]">
-					  <tr>
-					    <td>{{item.id}}</td>
-					    <td>{{item.shipstate}}</td> 
-					  </tr>
-					  </template>
-					</table>
-				</template>
-            </div>
-        
-    </template>
-</div>
-
+        <gid-get-samples api-url='https://srv-34-197-77-167.globalids.com:8443/api/v1' 
+        limit = '50' columns = '["-4110485992817674132","7543548824685721599"]' api-token = 'MTAxNjUwMzAxMTUwMzY0NDg5MTU3ODA5MDFY'
+        get-samples = true
+        sampledata = {{sampledata}}></gid-get-samples>
+        		<template is="dom-if" if="[[fetchSamplesSuccess]]">
+	                <p></p>
+	                <template is="dom-if" if="[[sampledata.columns]]">
+		                <table style="width:50%">
+						  <tr>
+						    <th>{{col1}}</th> 
+						    <th>{{col2}}</th>
+						  </tr>
+						  <template is="dom-repeat" items="[[sampledata.rows]]">
+						  <tr>
+						    <td>{{item.0}}</td>
+						    <td>{{item.1}}</td> 
+						  </tr>
+						  </template>
+						</table>
+					</template>
+    		</template>
+    		<template is="dom-if" if="![[fetchSamplesSuccess]]">
+                <p>{{response.developerMessage}}</p>
+           </template>
     </template>
     <script>
         (function () {
@@ -45,12 +45,12 @@
                 properties: {
                     samplerows: {
                     	type: Array,
-                    	notify: true    
+                    	notify: true   
                    },
-                   samplecolumns: {
+                   sampledata: {
                    	type: Array,
                    	notify: true,
-                   	observer: 'samplecolumnsArrChanged'
+                   	observer: 'sampledataArrObserver'
                   },
                   col1: {
                 	  type: String,
@@ -61,12 +61,21 @@
                 	  type: String,
                       notify: true,
                       value: ""
+                  },
+                  fetchSamplesSuccess:{
+                	  type: Boolean,
+                	  notify: true,
+                	  value: false
                   }
                 },
-                samplecolumnsArrChanged: function(event){
-                	if(this.samplecolumns.length){
-                		this.col1 =  this.samplecolumns[1]["label"];
-                		this.col2 =  this.samplecolumns[0]["label"];
+                sampledataArrObserver: function(){
+                	if(this.sampledata.errorCode){
+                		this.fetchSamplesSuccess = false;
+                	}
+                	if(this.sampledata.columns){
+                		this.fetchSamplesSuccess = true;
+                		this.col1 =  this.sampledata.columns[0]["label"];
+                		this.col2 =  this.sampledata.columns[1]["label"];
                 	}
                 }
 
