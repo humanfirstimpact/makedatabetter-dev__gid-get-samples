@@ -101,14 +101,14 @@ The output of this components will be as follows:
 <dom-module id="gid-get-samples">
     <template>
         
-        <!-- fetch entity _path  -->
-        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
-        <!--  fetch entity _path -->
+        <!-- fetch entity path  -->
+        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
+        <!--  fetch entity path -->
         
         <!-- table samples -->
         <gid-api auto=false
-                 method="GET" api-url={{_sampleUrl}} response='{{_sampleResponse}}' error = '{{_sampleError}}'
-                 api-params={{_sampleParams}} api-token = {{_sampleToken}} api-timeout={{_sampleTimeout}}></gid-api>
+                 method="GET" api-url={{sampleUrl}} response='{{sampleResponse}}' error = '{{sampleError}}'
+                 api-params={{sampleParams}} api-token = {{sampleToken}} api-timeout={{sampleTimeout}}></gid-api>
         <!-- table samples -->
 
     </template>
@@ -118,124 +118,109 @@ The output of this components will be as follows:
             Polymer({
                 is: 'gid-get-samples',
                 properties: {
-                	/*Authorization token for accessing rest api*/
                 	apiToken: {
                     	type: String,
                         notify: true,
                         value : ''
                     },
-                	_paramsArr: {
+                	paramsArr: {
       	           	   type: Array,
       	           	   notify: true,
       	           	   value: ["columns", "limit", "offset"]
                      },
-                    
-                    /*Object for storing success/error response*/ 
                 	sampledata: {
                         type: Array,
                         notify: true
                     },
-                    
-                    /*Base url*/
                     apiUrl: {
                         type: String,
                         notify: true,
                         value: ''
                     },
-                    _sampleUrl: {
+                    sampleUrl: {
                         type: String,
                         notify: true
                     },
-                    _sampleTimeout: {
+                    sampleTimeout: {
                         type: Number,
                         notify: true,
                         value: 0
                     },
-                    _sampleResponse: {
+                    sampleResponse: {
                         type: Object,
                         notify: true,
-                        observer: '_sampleResponseReceived'
+                        observer: 'sampleResponseReceived'
                     },
-                    _sampleError : {
+                    sampleError : {
     	     	  		type : Object,
     	     	  		notify : true,
-    	     	  		observer : '_sampleErrorReceived'
+    	     	  		observer : 'sampleErrorReceived'
             	  	},
-                    _sampleParams: {
+                    sampleParams: {
                         type: String,
                         notify: true
                     },
-                    _sampleToken: {
+                    sampleToken: {
                     	type: String,
                         notify: true
                     },
-                    
-                    /*Limit parameter to paginate records*/
                     limit:{
                     	type: String,
                     	notify: true,
                     	value: ''
                     },
-                    
-                    /*Offset parameter to paginate records*/
                     offset:{
                     	type: String,
                     	notify: true,
                     	value: ''
                     },
-                    
-                    /*Array to pass columns parameter*/
                     columns: {
                     	type: Array,
                     	notify: true,
                     	value: []
                     },
-                    
-                    /*User Id*/
                     user: {
                     	type: String,
                         notify: true,
                         value: ''
                     },
-                    _pathKey: {
+                    pathKey: {
     	            	type: String,
     	                notify: true,
     	                value: ''
     	            },
-                    _path: {
+                    path: {
                     	type: String,
                         notify: true,
                         value: '',
-                        observer: '_pathReceived'
+                        observer: 'pathReceived'
                     },
-                    _apiEntity: {
+                    apiEntity: {
                     	 type: String,
                     	 notify: true,
                     	 value: ''
                     },
-                    
-                    /*Flag for fetching samples. Needs to be set to 'true' to fetch samples*/
                     getSamples: {
                     	type: Boolean,
                     	notify: true,
                     	value: false,
-                    	observer: '_fetchSamples'
+                    	observer: 'fetchSamples'
                     }
                 },
-                _fetchSamples: function () {
+                fetchSamples: function () {
                 	if (this.getSamples) {
 	                    if (!this.apiUrl) {
-	                        this._sampleUrl = this.importPath + 'assets/json/get-samples.json';
-	                        this._sampleTimeout =  this._sampleTimeout - 1;
+	                        this.sampleUrl = this.importPath + 'assets/json/get-samples.json';
+	                        this.sampleTimeout =  this.sampleTimeout - 1;
 	                    } else {
-	                    	this._pathKey =  'default';
-	                    	this._apiEntity = 'GET-SAMPLES';
+	                    	this.pathKey =  'default';
+	                    	this.apiEntity = 'GET-SAMPLES';
 	                    }
                 	}
                 },
-                _pathReceived: function(){
-                 	 if(this._path){
-                 		var res = this._path.split(/{([^}]+)}/);
+                pathReceived: function(){
+                 	 if(this.path){
+                 		var res = this.path.split(/{([^}]+)}/);
                  		for (var i in res) {
                  			if(!res[i].startsWith("/")){
                  					if(this[res[i]]){
@@ -243,57 +228,57 @@ The output of this components will be as follows:
                  					}
                  			}
                  		}
-               			this._sampleUrl = this.apiUrl + res.join("");
+               			this.sampleUrl = this.apiUrl + res.join("");
                			var paramVal = '';
                			var paramsObj = {};
-               			for (var i in this._paramsArr){
+               			for (var i in this.paramsArr){
                         	paramVal = '';
-	                        	if(typeof(this[this._paramsArr[i]]) === "string"){
-	                        		paramVal = this[this._paramsArr[i]];
+	                        	if(typeof(this[this.paramsArr[i]]) === "string"){
+	                        		paramVal = this[this.paramsArr[i]];
 	                        	}
 	                        	else{
-	                        		if(this[this._paramsArr[i]].length){
-	                            		for (var j in this[this._paramsArr[i]]) {
-	                    		    		paramVal = paramVal + this[this._paramsArr[i]][j];
-	                    		    		if(j != (this[this._paramsArr[i]].length - 1)){
+	                        		if(this[this.paramsArr[i]].length){
+	                            		for (var j in this[this.paramsArr[i]]) {
+	                    		    		paramVal = paramVal + this[this.paramsArr[i]][j];
+	                    		    		if(j != (this[this.paramsArr[i]].length - 1)){
 	                    		    			paramVal = paramVal + ',';
 	                    		    		}
 	                             		}
 	                            	}
 	                        	}
-	                        	if(this[this._paramsArr[i]]){
-	                        		paramsObj[this._paramsArr[i]]= paramVal;
+	                        	if(this[this.paramsArr[i]]){
+	                        		paramsObj[this.paramsArr[i]]= paramVal;
 	                        	}
                         }
-               			this._sampleParams = JSON.stringify(paramsObj);
+               			this.sampleParams = JSON.stringify(paramsObj);
                			if(this.apiToken){
-               				this._sampleToken =  this.apiToken;
+               				this.sampleToken =  this.apiToken;
                			}
-               			this._sampleTimeout =  this._sampleTimeout - 1;
+               			this.sampleTimeout =  this.sampleTimeout - 1;
                    }
               },
-              _sampleResponseReceived: function (newvalue, oldvalue) {
-            	  this._reset();
+              sampleResponseReceived: function (newvalue, oldvalue) {
+            	  this.reset();
                   if (newvalue != null) {
                       this.async(function () {
-                      	  this.sampledata =  this.sampledata.concat(newvalue);
+                      	  this.sampledata =  newvalue;
                       }, 500);
                   }
 
               },
-              _sampleErrorReceived : function(newvalue, oldvalue){
-              	 this._reset();
+              sampleErrorReceived : function(newvalue, oldvalue){
+              	 this.reset();
         	          if(newvalue != null){
         		             this.async(function() {
-        		         		this.sampledata =   this.sampledata.concat(newvalue.response);
+        		         		this.sampledata =  newvalue;
         		   		 	          }, 500);
         	          }
                  	
               },
-              _reset: function(){
+              reset: function(){
             	  this.sampledata = [];
-				  this._apiEntity = '';
-				  this._path = '';
+				  this.apiEntity = '';
+				  this.path = '';
 				  this.getSamples = false;
               }
             });
