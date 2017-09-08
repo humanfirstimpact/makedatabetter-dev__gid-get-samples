@@ -101,14 +101,14 @@ The output of this components will be as follows:
 <dom-module id="gid-get-samples">
     <template>
         
-        <!-- fetch entity path  -->
-        	<gid-api entity = '{{apiEntity}}' path-key= '{{pathKey}}' path='{{path}}'></gid-api>
-        <!--  fetch entity path -->
+        <!-- fetch entity _path  -->
+        	<gid-api entity = '{{_apiEntity}}' path-key= '{{_pathKey}}' path='{{_path}}'></gid-api>
+        <!--  fetch entity _path -->
         
         <!-- table samples -->
         <gid-api auto=false
-                 method="GET" api-url={{sampleUrl}} response='{{sampleResponse}}' error = '{{sampleError}}'
-                 api-params={{sampleParams}} api-token = {{sampleToken}} api-timeout={{sampleTimeout}}></gid-api>
+                 method="GET" api-url={{_sampleUrl}} response='{{sampleResponse}}' error = '{{sampleError}}'
+                 api-params={{_sampleParams}} api-token = {{_sampleToken}} api-timeout={{_sampleTimeout}}></gid-api>
         <!-- table samples -->
 
     </template>
@@ -118,109 +118,130 @@ The output of this components will be as follows:
             Polymer({
                 is: 'gid-get-samples',
                 properties: {
+                	/*Authorization token for accessing rest api*/
                 	apiToken: {
                     	type: String,
                         notify: true,
                         value : ''
                     },
-                	paramsArr: {
+                    /*Array listing the parameters*/
+                	_paramsArr: {
       	           	   type: Array,
       	           	   notify: true,
       	           	   value: ["columns", "limit", "offset"]
                      },
+                    /*Object for storing success/error response*/ 
                 	sampledata: {
                         type: Array,
                         notify: true
                     },
+                    /*Base url*/
                     apiUrl: {
                         type: String,
                         notify: true,
                         value: ''
                     },
-                    sampleUrl: {
+                    /*Url sent to gid-api*/
+                    _sampleUrl: {
                         type: String,
                         notify: true
                     },
-                    sampleTimeout: {
+                    /*Timeout sent to gid-api*/
+                    _sampleTimeout: {
                         type: Number,
                         notify: true,
                         value: 0
                     },
+                    /*Response sent to gid-api. This is a private property*/
                     sampleResponse: {
                         type: Object,
                         notify: true,
-                        observer: 'sampleResponseReceived'
+                        observer: '_sampleResponseReceived'
                     },
+                    /*Error sent to gid-api. This is a private property*/
                     sampleError : {
     	     	  		type : Object,
     	     	  		notify : true,
-    	     	  		observer : 'sampleErrorReceived'
+    	     	  		observer : '_sampleErrorReceived'
             	  	},
-                    sampleParams: {
+            	  	/*Params sent to gid-api*/
+                    _sampleParams: {
                         type: String,
                         notify: true
                     },
-                    sampleToken: {
+                    /*Token sent to gid-api*/
+                    _sampleToken: {
                     	type: String,
                         notify: true
                     },
+                    
+                    /*Limit parameter to paginate records*/
                     limit:{
                     	type: String,
                     	notify: true,
                     	value: ''
                     },
+                    
+                    /*Offset parameter to paginate records*/
                     offset:{
                     	type: String,
                     	notify: true,
                     	value: ''
                     },
+                    /*Array to pass columns parameter*/
                     columns: {
                     	type: Array,
                     	notify: true,
                     	value: []
                     },
+                    /*User Id*/
                     user: {
                     	type: String,
                         notify: true,
                         value: ''
                     },
-                    pathKey: {
-    	            	type: String,
-    	                notify: true,
-    	                value: ''
-    	            },
-                    path: {
-                    	type: String,
+                    /*The api path key*/
+     	           _pathKey: {
+     	            	type: String,
+     	                notify: true,
+     	                value: ''
+     	           },
+     	           /*The api path*/
+                    _path: {
+                    	   type: String,
                         notify: true,
                         value: '',
-                        observer: 'pathReceived'
+                        observer: '_pathReceived'
                     },
-                    apiEntity: {
-                    	 type: String,
-                    	 notify: true,
-                    	 value: ''
+                    /*Api entity sent to gid-api*/
+                    _apiEntity: {
+                    	   type: String,
+                        notify: true
                     },
+                    /*Flag for fetching samples. Needs to be set to 'true' to fetch samples*/
                     getSamples: {
                     	type: Boolean,
                     	notify: true,
                     	value: false,
-                    	observer: 'fetchSamples'
+                    	observer: '_fetchSamples'
                     }
                 },
-                fetchSamples: function () {
+                /* Observer of 'getSamples' flag */ 
+                _fetchSamples: function () {
                 	if (this.getSamples) {
 	                    if (!this.apiUrl) {
-	                        this.sampleUrl = this.importPath + 'assets/json/get-samples.json';
-	                        this.sampleTimeout =  this.sampleTimeout - 1;
+	                        this._sampleUrl = this.importPath + 'assets/json/get-samples.json';
+	                        this._sampleTimeout =  this._sampleTimeout - 1;
 	                    } else {
-	                    	this.pathKey =  'default';
-	                    	this.apiEntity = 'GET-SAMPLES';
+	                    	this._pathKey =  'default';
+	                    	this._apiEntity = 'GET-SAMPLES';
 	                    }
                 	}
                 },
-                pathReceived: function(){
-                 	 if(this.path){
-                 		var res = this.path.split(/{([^}]+)}/);
+                /* Observer for api path */
+                _pathReceived: function(){
+                 	 if(this._path){
+                 		var res = this._path.split(/{([^}]+)}/);
                  		for (var i in res) {
                  			if(!res[i].startsWith("/")){
                  					if(this[res[i]]){
@@ -228,57 +249,60 @@ The output of this components will be as follows:
                  					}
                  			}
                  		}
-               			this.sampleUrl = this.apiUrl + res.join("");
+               			this._sampleUrl = this.apiUrl + res.join("");
                			var paramVal = '';
                			var paramsObj = {};
-               			for (var i in this.paramsArr){
+               			for (var i in this._paramsArr){
                         	paramVal = '';
-	                        	if(typeof(this[this.paramsArr[i]]) === "string"){
-	                        		paramVal = this[this.paramsArr[i]];
+	                        	if(typeof(this[this._paramsArr[i]]) === "string"){
+	                        		paramVal = this[this._paramsArr[i]];
 	                        	}
 	                        	else{
-	                        		if(this[this.paramsArr[i]].length){
-	                            		for (var j in this[this.paramsArr[i]]) {
-	                    		    		paramVal = paramVal + this[this.paramsArr[i]][j];
-	                    		    		if(j != (this[this.paramsArr[i]].length - 1)){
+	                        		if(this[this._paramsArr[i]].length){
+	                            		for (var j in this[this._paramsArr[i]]) {
+	                    		    		paramVal = paramVal + this[this._paramsArr[i]][j];
+	                    		    		if(j != (this[this._paramsArr[i]].length - 1)){
 	                    		    			paramVal = paramVal + ',';
 	                    		    		}
 	                             		}
 	                            	}
 	                        	}
-	                        	if(this[this.paramsArr[i]]){
-	                        		paramsObj[this.paramsArr[i]]= paramVal;
+	                        	if(this[this._paramsArr[i]]){
+	                        		paramsObj[this._paramsArr[i]]= paramVal;
 	                        	}
                         }
-               			this.sampleParams = JSON.stringify(paramsObj);
+               			this._sampleParams = JSON.stringify(paramsObj);
                			if(this.apiToken){
-               				this.sampleToken =  this.apiToken;
+               				this._sampleToken =  this.apiToken;
                			}
-               			this.sampleTimeout =  this.sampleTimeout - 1;
+               			this._sampleTimeout =  this._sampleTimeout - 1;
                    }
               },
-              sampleResponseReceived: function (newvalue, oldvalue) {
-            	  this.reset();
+              /* Success response handler */
+              _sampleResponseReceived: function (newvalue, oldvalue) {
+            	  this._reset();
                   if (newvalue != null) {
                       this.async(function () {
-                      	  this.sampledata =  newvalue;
+                      	  this.sampledata =  this.sampledata.concat(newvalue);
                       }, 500);
                   }
 
               },
-              sampleErrorReceived : function(newvalue, oldvalue){
-              	 this.reset();
+              /* Error response handler */
+              _sampleErrorReceived : function(newvalue, oldvalue){
+              	 this._reset();
         	          if(newvalue != null){
         		             this.async(function() {
-        		         		this.sampledata =  newvalue;
+        		         		this.sampledata =   this.sampledata.concat(newvalue.response);
         		   		 	          }, 500);
         	          }
                  	
               },
-              reset: function(){
+              /* Reset method */
+              _reset: function(){
             	  this.sampledata = [];
-				  this.apiEntity = '';
-				  this.path = '';
+				  this._apiEntity = '';
+				  this._path = '';
 				  this.getSamples = false;
               }
             });
