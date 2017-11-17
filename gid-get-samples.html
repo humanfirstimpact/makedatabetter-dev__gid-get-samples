@@ -106,7 +106,7 @@ The output of this components will be as follows:
         <!--  fetch entity _path -->
         
         <!-- table samples -->
-        <gid-api auto=false
+        <gid-api auto=false 
                  method="GET" api-url={{_sampleUrl}} response='{{sampleResponse}}' error = '{{sampleError}}'
                  api-params={{_sampleParams}} api-token = {{_sampleToken}} api-timeout={{_sampleTimeout}}></gid-api>
         <!-- table samples -->
@@ -174,57 +174,77 @@ The output of this components will be as follows:
                     	type: String,
                         notify: true
                     },
+
+                    coloffset:{
+                    type:String,value:'',notify:true, observer:'_updateOffset'
+                    },
+                    collimit:{type:String,value:'',notify:true, observer:'_updateLimit'},
                     
                     /*Limit parameter to paginate records*/
                     limit:{
-                    	type: String,
-                    	notify: true,
-                    	value: ''
+                      type: String,
+                      notify: true,
+                      value: ''
                     },
                     
+
                     /*Offset parameter to paginate records*/
                     offset:{
-                    	type: String,
-                    	notify: true,
-                    	value: ''
+                      type: String,
+                      notify: true,
+                      value: ''
                     },
                     /*Array to pass columns parameter*/
                     columns: {
-                    	type: Array,
-                    	notify: true,
-                    	value: []
+                      type: Array,
+                      notify: true,
+                      value: [],
+                      observer:'_updateSamples'
                     },
                     /*User Id*/
                     user: {
-                    	type: String,
+                      type: String,
                         notify: true,
                         value: ''
                     },
                     /*The api path key*/
-     	           _pathKey: {
-     	            	type: String,
-     	                notify: true,
-     	                value: ''
-     	           },
-     	           /*The api path*/
+                 _pathKey: {
+                    type: String,
+                      notify: true,
+                      value: ''
+                 },
+                 /*The api path*/
                     _path: {
-                    	   type: String,
+                         type: String,
                         notify: true,
                         value: '',
                         observer: '_pathReceived'
                     },
                     /*Api entity sent to gid-api*/
                     _apiEntity: {
-                    	   type: String,
+                         type: String,
                         notify: true
                     },
                     /*Flag for fetching samples. Needs to be set to 'true' to fetch samples*/
                     getSamples: {
-                    	type: Boolean,
-                    	notify: true,
-                    	value: false,
-                    	observer: '_fetchSamples'
-                    }
+                      type: Boolean,
+                      notify: true,
+                      value: false,
+                      observer: '_fetchSamples'
+                    },
+                    readable:{type:Boolean,value:false}
+                },
+                _updateOffset:function(){
+                  if(this.coloffset.length>0 && this.columns){
+                    this.getSamples=true;
+                  }
+                },
+                _updateLimit:function(){
+                  this.coloffset="";
+                  this.coloffset="0";
+                },
+                _updateSamples:function(){
+                    this.getSamples=true;
                 },
                 /* Observer of 'getSamples' flag */ 
                 _fetchSamples: function () {
@@ -240,36 +260,45 @@ The output of this components will be as follows:
                 },
                 /* Observer for api path */
                 _pathReceived: function(){
-                 	 if(this._path){
-                 		var res = this._path.split(/{([^}]+)}/);
-                 		for (var i in res) {
-                 			if(!res[i].startsWith("/")){
-                 					if(this[res[i]]){
-                 						res[i] = this[res[i]];
-                 					}
-                 			}
-                 		}
-               			this._sampleUrl = this.apiUrl + res.join("");
-               			var paramVal = '';
-               			var paramsObj = {};
-               			for (var i in this._paramsArr){
-                        	paramVal = '';
-	                        	if(typeof(this[this._paramsArr[i]]) === "string"){
-	                        		paramVal = this[this._paramsArr[i]];
-	                        	}
-	                        	else{
-	                        		if(this[this._paramsArr[i]].length){
-	                            		for (var j in this[this._paramsArr[i]]) {
-	                    		    		paramVal = paramVal + this[this._paramsArr[i]][j];
-	                    		    		if(j != (this[this._paramsArr[i]].length - 1)){
-	                    		    			paramVal = paramVal + ',';
-	                    		    		}
-	                             		}
-	                            	}
-	                        	}
-	                        	if(this[this._paramsArr[i]]){
-	                        		paramsObj[this._paramsArr[i]]= paramVal;
-	                        	}
+                   if(this._path){
+                    var res = this._path.split(/{([^}]+)}/);
+                    for (var i in res) {
+                      if(!res[i].startsWith("/")){
+                          if(this[res[i]]){
+                            res[i] = this[res[i]];
+                          }
+                      }
+                    }
+                    this._sampleUrl = this.apiUrl + res.join("");
+                    var paramVal = '';
+                    var paramsObj = {};
+                    for (var i in this._paramsArr){
+                          paramVal = '';
+                            if(typeof(this[this._paramsArr[i]]) === "string"){
+                              paramVal = this[this._paramsArr[i]];
+                            }
+                            
+                            else{
+                              if(this[this._paramsArr[i]].length){
+                                  //var tempCols=(this.columns);
+                                  //console.error(tempCols,this.coloffset,this.collimit);
+                                  /*for (var j in this[this._paramsArr[i]]) {
+                                    paramVal = paramVal + this[this._paramsArr[i]][j];
+                                    if(j != (this[this._paramsArr[i]].length - 1)){
+                                      paramVal = paramVal + ',';
+                                    }
+                                  }*/
+                                  var from=parseInt(this.coloffset);
+                                  var to=from+parseInt(this.collimit);
+                                  for(var j=from;j<to;j++){
+                                    paramVal=paramVal+this.columns[j];
+                                    if(j!=(to-1))paramVal=paramVal+',';
+                                  }
+                                }
+                            }
+                            if(this[this._paramsArr[i]]){
+                              paramsObj[this._paramsArr[i]]= paramVal;
+                            }
                         }
                			this._sampleParams = JSON.stringify(paramsObj);
                			if(this.apiToken){
